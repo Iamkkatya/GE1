@@ -58,6 +58,8 @@ public class PlayerInput : MonoBehaviour
         get { return m_Pause; }
     }
 
+    public string currentControlScheme { get; internal set; }
+
     WaitForSeconds m_AttackInputWait;
     Coroutine m_AttackWaitCoroutine;
 

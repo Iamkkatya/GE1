@@ -128,14 +128,36 @@ namespace Gamekit3D
 
         public void AddForce(Vector3 force, bool useGravity = true)
         {
+            // Перевірка наявності NavMeshAgent
+            if (m_NavMeshAgent == null)
+            {
+                Debug.LogError("NavMeshAgent is null! Please assign it in the inspector.");
+                return;
+            }
+
+            // Перевірка, чи активний NavMeshAgent перед скиданням шляху
             if (m_NavMeshAgent.enabled)
-                m_NavMeshAgent.ResetPath();
+            {
+                // Перевіряємо, чи на NavMesh перед скиданням шляху
+                if (m_NavMeshAgent.isOnNavMesh)
+                {
+                    m_NavMeshAgent.ResetPath();
+                }
+                else
+                {
+                    Debug.LogWarning("NavMeshAgent is not on NavMesh! ResetPath cannot be called.");
+                }
+            }
 
             m_ExternalForce = force;
-            m_NavMeshAgent.enabled = false;
-            m_UnderExternalForce = true;
-            m_ExternalForceAddGravity = useGravity;
+
+            // Деактивація NavMeshAgent
+            m_NavMeshAgent.enabled = false; // Зверніть увагу, що це може призвести до помилок при подальших викликах
+
+            m_UnderExternalForce = true; // Вказуємо, що агент під зовнішнім впливом
+            m_ExternalForceAddGravity = useGravity; // Установка флагу для гравітації
         }
+
 
         public void ClearForce()
         {

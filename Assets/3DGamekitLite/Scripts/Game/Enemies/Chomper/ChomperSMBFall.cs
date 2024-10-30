@@ -8,15 +8,34 @@ namespace Gamekit3D
     {
         public override void OnSLStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            // Adding force will disable the navmesh agent & move through the rigidbody. 
-            // Since we only want the chomper to fall, we add zero force, the call just allow to make it move through rigidbody
-            if(m_MonoBehaviour != null && m_MonoBehaviour.controller != null)
-                m_MonoBehaviour.controller.AddForce(Vector3.zero);
+            // Перевірка наявності MonoBehaviour та контролера
+            if (m_MonoBehaviour == null)
+            {
+                Debug.LogError("m_MonoBehaviour is null! Cannot add force.");
+                return;
+            }
+
+            if (m_MonoBehaviour.controller == null)
+            {
+                Debug.LogError("Controller is null! Cannot add force.");
+                return;
+            }
+
+            // Додаємо нульову силу, щоб активувати Rigidbody
+            m_MonoBehaviour.controller.AddForce(Vector3.zero);
         }
 
         public override void OnSLStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            m_MonoBehaviour.controller.ClearForce();
+            // Перевірка наявності MonoBehaviour та контролера перед очищенням сили
+            if (m_MonoBehaviour != null && m_MonoBehaviour.controller != null)
+            {
+                m_MonoBehaviour.controller.ClearForce();
+            }
+            else
+            {
+                Debug.LogWarning("Cannot clear force: m_MonoBehaviour or controller is null.");
+            }
         }
     }
 }
